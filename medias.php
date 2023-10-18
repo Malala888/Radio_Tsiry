@@ -153,9 +153,18 @@ include('header.php');
                     </div>
                 </form>
 
+                <!-- Formulaire de recherche par DatePaye -->
+                <form method="get" class="search-form">
+                    <div class="form-group d-flex" style="margin-left: 368px;">
+                        <input type="date" name="search_date" class="form-control short-search-input" id="search_date">
+                        <button type="submit" class="btn btn-primary search-btn" style="margin-left: 10px;">Montant</button>
+                    </div>
+                </form>
+
                 <!-- Tableau pour afficher les médias -->
-                <div class="table-responsive">
+                <form action="archives.php" method="post">
                     <table class="table my-4 mr-3" style="margin-right: 20px;">
+                        <!-- Insérez vos en-têtes de colonnes ici -->
                         <thead>
                             <th></th>
                             <th>Nom</th>
@@ -215,20 +224,11 @@ include('header.php');
                             ?>
                         </tbody>
                     </table>
-                </div>
-<!-- Formulaire de recherche par DatePaye en dehors du formulaire principal -->
-<div class="search-form" style="margin-top: 20px; margin-left: 720px;">
-    <form method="get" class="d-flex">
-        <div class="form-group me-2">
-            <input type="date" name="search_date" class="form-control short-search-input" id="search_date">
-        </div>
-        <button type="submit" class="btn btn-primary search-btn">Recette</button>
-        <form action="archives.php" method="post">
-            <input type="submit" name="moveToArchives" class="btn btn-primary" style="margin-left: 20px;" value="Archivés">
-        </form>
-    </form>
-</div>
 
+                    <div style='margin-left: 635px;'>
+                        <input type="submit" name="moveToArchives" class="btn btn-primary" value="Archivés">
+                    </div>
+                </form>
             </section>
         </div>
     </div>
