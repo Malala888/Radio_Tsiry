@@ -1,0 +1,50 @@
+.container {
+    float: left;
+    margin-right: 20px;
+}
+
+a.centered {
+    display: block;
+    margin: 20px 0;
+    padding: 10px;
+    text-align: center;
+    border: 2px solid pink;
+    border-radius: 10px;
+    background: pink;
+    text-decoration: none;
+    color: white;
+    width: 400px;
+    margin-left: 40px;
+    font-size: 36px;
+    font-weight: bold;
+}
+
+.large-title {
+    font-size: 48px;
+    font-weight: bold;
+    color: violet;
+    margin-top: 10px;
+}
+
+.right-sidebar {
+    float: right;
+    width: calc(50% - 20px);
+    height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.large-image {
+    width: 100%;
+    max-height: none;
+}
+
+.text-below-image {
+    font-size: 24px;
+    color: violet;
+    margin-top: 20px;
+    margin-left: 40px; /* Espacement vers la droite */
+}
