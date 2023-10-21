@@ -43,7 +43,7 @@ if (isset($_POST['moveToArchives'])) {
     foreach ($selectedItems as $selectedItem) {
         // Vous devez exécuter une requête d'insertion dans la table "archives"
         // pour déplacer ces éléments. Voici un exemple :
-        
+
         // Requête d'insertion
         $insertSql = "INSERT INTO `archives` SELECT * FROM `medias` WHERE `nom` = :selectedItem";
 
@@ -94,6 +94,7 @@ include('header.php');
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -136,18 +137,67 @@ include('header.php');
         }
     </style>
 </head>
+
 <body>
+    <script>
+        $(document).ready(function() {
+            $('.view_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                /*console.log(nom1); */
+
+                $.ajax({
+                    method: "POST",
+                    url: "read_archives.php",
+                    data: {
+                        'click_view_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        /*console.log(response);*/
+
+                        $('.view_product').html(response);
+                        $('#viewproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
     <div class="container">
         <div class="row">
             <section class="col-12">
-                <?php 
-                if(!empty($_SESSION['ERREUR'])) 
-                {
+                <?php
+                if (!empty($_SESSION['ERREUR'])) {
                     echo '<div class="alert alert-danger" role="alert">' . $_SESSION['message'] . '</div>';
                     $_SESSION['ERREUR'] = "";
                 }
                 ?>
                 <h1 style=' margin-left: 40px;'>Liste des archives </h1>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+                </script>
+
+                <!-- Detail Modal -->
+                <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="viewproductModalLabel">Détail du médias</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="view_product">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
@@ -181,21 +231,21 @@ include('header.php');
                         <tbody>
                             <?php
                             foreach ($result as $archive) {
-                            ?>  
+                            ?>
                                 <tr>
                                     <td><input type="checkbox" name="selected[]" value="<?= $archive['nom'] ?>"></td>
-                                    <td><?= $archive['nom']?></td>
-                                    <td><?= $archive['type']?></td>
-                                    <td><?= $archive['DatePaye'] ?></td> 
-                                    <td><?= $archive['date_debut']?></td>
-                                    <td><?= $archive['date_fin']?></td>
-                                    <td><?= $archive['situation']?></td>
-                                    <td><?= $archive['type_payement']?></td>
-                                    <td><?= $archive['montant']?></td>
-                                    <td><?= $archive['matin']?></td>
-                                    <td><?= $archive['midi']?></td>
-                                    <td><?= $archive['soir']?></td>
-                                    <td><?= $archive['nbr_diffusion']?></td>
+                                    <td class="nom1"><?= $archive['nom'] ?></td>
+                                    <td><?= $archive['type'] ?></td>
+                                    <td><?= $archive['DatePaye'] ?></td>
+                                    <td><?= $archive['date_debut'] ?></td>
+                                    <td><?= $archive['date_fin'] ?></td>
+                                    <td><?= $archive['situation'] ?></td>
+                                    <td><?= $archive['type_payement'] ?></td>
+                                    <td><?= $archive['montant'] ?></td>
+                                    <td><?= $archive['matin'] ?></td>
+                                    <td><?= $archive['midi'] ?></td>
+                                    <td><?= $archive['soir'] ?></td>
+                                    <td><?= $archive['nbr_diffusion'] ?></td>
                                     <td class="audio-col" style="width: 200px; height: 40px;">
                                         <?php
                                         if (!empty($archive['audio'])) {
@@ -208,13 +258,13 @@ include('header.php');
                                     </td>
 
                                     <td>
-                                    <div style="display: flex; align-items: center;">
-                                        <a href="read_archives.php?nom=<?= $archive['nom']?>"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                        <a href="supprimer_archive.php?nom=<?= $archive['nom']?>"><i class='bx bx-trash' style='color: blue;'></i></a>
-                                    </div>
+                                        <div style="display: flex; align-items: center;">
+                                            <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
+                                            <a href="supprimer_archive.php?nom=<?= $archive['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                        </div>
                                     </td>
-                                </tr> 
-                            <?php          
+                                </tr>
+                            <?php
                             }
                             ?>
                         </tbody>
@@ -224,4 +274,5 @@ include('header.php');
         </div>
     </div>
 </body>
+
 </html>

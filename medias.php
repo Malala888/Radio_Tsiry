@@ -87,6 +87,7 @@ include('header.php');
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -129,18 +130,70 @@ include('header.php');
         }
     </style>
 </head>
+
 <body>
+    <script>
+        $(document).ready(function() {
+            $('.view_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                /*console.log(nom1); */
+
+                $.ajax({
+                    method: "POST",
+                    url: "read.php",
+                    data: {
+                        'click_view_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        /*console.log(response);*/
+
+                        $('.view_product').html(response);
+                        $('#viewproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
     <div class="container">
         <div class="row">
             <section class="col-12">
-                <?php 
-                if(!empty($_SESSION['ERREUR'])) 
-                {
+                <?php
+                if (!empty($_SESSION['ERREUR'])) {
                     echo '<div class="alert alert-danger" role="alert">' . $_SESSION['message'] . '</div>';
                     $_SESSION['ERREUR'] = "";
                 }
                 ?>
                 <h1 style=' margin-left: 40px;'>Liste des médias </h1>
+
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+                </script>
+
+                <!-- Detail Modal -->
+                <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="viewproductModalLabel">Détail du médias</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="view_product">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
 
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
@@ -185,21 +238,21 @@ include('header.php');
                         <tbody>
                             <?php
                             foreach ($result as $media) {
-                            ?>  
+                            ?>
                                 <tr>
-                                    <td><input type="checkbox" name="selected[]" value="<?= $media['nom'] ?>"></td>                                    
-                                    <td><?= $media['nom']?></td>
-                                    <td><?= $media['type']?></td>
-                                    <td><?= $media['DatePaye'] ?></td> 
-                                    <td><?= $media['date_debut']?></td>
-                                    <td><?= $media['date_fin']?></td>
-                                    <td><?= $media['situation']?></td>
-                                    <td><?= $media['type_payement']?></td>
-                                    <td><?= $media['montant']?></td>
-                                    <td><?= $media['matin']?></td>
-                                    <td><?= $media['midi']?></td>
-                                    <td><?= $media['soir']?></td>
-                                    <td><?= $media['nbr_diffusion']?></td>
+                                    <td><input type="checkbox" name="selected[]" value="<?= $media['nom'] ?>"></td>
+                                    <td class="nom1"><?= $media['nom'] ?></td>
+                                    <td><?= $media['type'] ?></td>
+                                    <td><?= $media['DatePaye'] ?></td>
+                                    <td><?= $media['date_debut'] ?></td>
+                                    <td><?= $media['date_fin'] ?></td>
+                                    <td><?= $media['situation'] ?></td>
+                                    <td><?= $media['type_payement'] ?></td>
+                                    <td><?= $media['montant'] ?></td>
+                                    <td><?= $media['matin'] ?></td>
+                                    <td><?= $media['midi'] ?></td>
+                                    <td><?= $media['soir'] ?></td>
+                                    <td><?= $media['nbr_diffusion'] ?></td>
                                     <td class="audio-col" style="width: 200px; height: 40px;">
                                         <?php
                                         if (!empty($media['audio'])) {
@@ -213,13 +266,13 @@ include('header.php');
 
                                     <td>
                                         <div style="display: flex; align-items: center;">
-                                            <a href="read.php?nom=<?= $media['nom']?>"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="modifier.php?nom=<?= $media['nom']?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                            <a href="supprimer.php?nom=<?= $media['nom']?>"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                            <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
+                                            <a href="modifier.php?nom=<?= $media['nom'] ?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
+                                            <a href="supprimer.php?nom=<?= $media['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
                                         </div>
                                     </td>
-                                </tr> 
-                            <?php          
+                                </tr>
+                            <?php
                             }
                             ?>
                         </tbody>
@@ -233,4 +286,5 @@ include('header.php');
         </div>
     </div>
 </body>
+
 </html>

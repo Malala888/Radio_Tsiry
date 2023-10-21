@@ -42,11 +42,11 @@ require_once('close.php');
 <?php
 $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des produits</span>";
 include('header.php');
-
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,34 +70,139 @@ include('header.php');
         .search-btn {
             margin-left: 10px;
         }
+
         /* Style pour la barre de recherche courte */
         .short-search-input {
-            max-width: 200px; /* Ajustez cette largeur selon vos préférences */
-            border-radius: 20px; /* Ajout de coins arrondis */
+            max-width: 200px;
+            /* Ajustez cette largeur selon vos préférences */
+            border-radius: 20px;
+            /* Ajout de coins arrondis */
         }
 
-        .idk_btn{
+        .idk_btn {
             margin-left: 920px;
         }
 
         .ml-3 {
-            margin-left: 10px; /* Espacement horizontal entre les boutons */
+            margin-left: 10px;
+            /* Espacement horizontal entre les boutons */
         }
-
     </style>
 </head>
+
 <body>
+
+    <script>
+        $(document).ready(function() {
+            $('.view_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                /*console.log(nom1); */
+
+                $.ajax({
+                    method: "POST",
+                    url: "detail.php",
+                    data: {
+                        'click_view_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        /*console.log(response);*/
+
+                        $('.view_product').html(response);
+                        $('#viewproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
+
     <div class="container">
         <div class="row">
             <section class="col-12">
-                <?php 
-                if(!empty($_SESSION['ERREUR'])) 
-                {
-                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['message'] . '</div>';
-                    $_SESSION['ERREUR'] = "";  // Assurez-vous d'utiliser la bonne clé ici
+                <?php
+                if (!empty($_SESSION['ERREUR'])) {
+                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['ERREUR'] . '</div>';
+                    $_SESSION['ERREUR'] = "";
                 }
                 ?>
                 <h1 style=' margin-left: 40px;'>Liste des produits </h1>
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+                </script>
+
+                <!-- Detail Modal -->
+                <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="viewproductModalLabel">Détail du produits</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="view_product">
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ajout-Modal -->
+                <div class="modal fade" id="ajoutModal" tabindex="-1" aria-labelledby="ajoutModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="ajoutModalLabel">Ajouter un produit</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="add.php" method="POST">
+                                <div class="modal-body">
+                                    <?php if (isset($erreurs['global'])) { ?>
+                                        <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
+                                    <?php } ?>
+                                    <div class="form-group mb-3">
+                                        <label for="">Nom du produit:</label>
+                                        <input type="text" class="form-control" name="nom" placeholder="Nom">
+                                        <?php if (isset($erreurs['nom'])) { ?>
+                                            <div class="alert alert-danger"><?= $erreurs['nom'] ?></div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Producteurs:</label>
+                                        <input type="text" class="form-control" name="producteurs" placeholder="Producteurs">
+                                        <?php if (isset($erreurs['producteurs'])) { ?>
+                                            <div class="alert alert-danger"><?= $erreurs['producteurs'] ?></div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Prix:</label>
+                                        <input type="number" class="form-control" name="prix" placeholder="Prix">
+                                        <?php if (isset($erreurs['prix'])) { ?>
+                                            <div class="alert alert-danger"><?= $erreurs['prix'] ?></div>
+                                        <?php } ?>
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Stock:</label>
+                                        <input type="number" class="form-control" name="stock" placeholder="Stock">
+                                        <?php if (isset($erreurs['stock'])) { ?>
+                                            <div class="alert alert-danger"><?= $erreurs['stock'] ?></div>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" name="ajout" class="btn btn-primary">Ajouter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
@@ -106,9 +211,12 @@ include('header.php');
                             <input type="text" name="search" class="form-control short-search-input" id="search">
                         </div>
                         <button type="submit" class="btn btn-primary search-btn"> <i class='bx bxs-search-alt-2'></i></button>
-                        <a href="add.php" class="btn btn-primary">Ajout</a>
                     </div>
                 </form>
+
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#ajoutModal">
+                    Ajout
+                </button>
 
                 <table class="table">
                     <thead>
@@ -120,21 +228,21 @@ include('header.php');
                     </thead>
                     <tbody>
                         <?php
-                        foreach($result as $produit){
-                        ?>  
+                        foreach ($result as $produit) {
+                        ?>
                             <tr>
-                                <td><?= $produit['nom']?></td>
-                                <td><?= $produit['producteurs']?></td>
-                                <td><?= $produit['prix']?></td>
-                                <td><?= $produit['stock']?></td>
+                                <td class="nom1"><?= $produit['nom'] ?></td>
+                                <td><?= $produit['producteurs'] ?></td>
+                                <td><?= $produit['prix'] ?></td>
+                                <td><?= $produit['stock'] ?></td>
                                 <td>
-                                    <a href="detail.php?nom=<?= $produit['nom']?>"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                    <a href="edit.php?nom=<?= $produit['nom']?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                    <a href="delete.php?nom=<?= $produit['nom']?>"><i class='bx bx-trash' style='color: blue;'></i></a>
-                                   
+                                    <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
+                                    <a href="edit.php?nom=<?= $produit['nom'] ?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
+                                    <a href="delete.php?nom=<?= $produit['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
                                 </td>
-                            </tr> 
-                        <?php          
+
+                            </tr>
+                        <?php
                         }
                         ?>
                     </tbody>
@@ -147,4 +255,5 @@ include('header.php');
         </div>
     </div>
 </body>
+
 </html>
