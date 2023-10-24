@@ -92,6 +92,43 @@ include('header.php');
 
 <body>
 
+    <!--Modifier-->
+    <script>
+        $(document).ready(function() {
+            $('.edit_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                console.log(nom1);
+
+                $.ajax({
+                    method: "POST",
+                    url: "edit.php",
+                    data: {
+                        'click_edit_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        /* console.log(response);*/
+                        $.each(response, function(Key, value) {
+                            /*console.log(value['prix']);*/
+
+                            $('#nom').val(value['nom']);
+                            $('#producteurs').val(value['producteurs']);
+                            $('#prix').val(value['prix']);
+                            $('#stock').val(value['stock']);
+                        });
+
+                        $('#editproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
+
+
+    <!--Detail-->
     <script>
         $(document).ready(function() {
             $('.view_data').click(function(e) {
@@ -132,6 +169,49 @@ include('header.php');
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
+
+                <!-- Modifier-Modal -->
+                <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel">Modifier un produit</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="edit.php" method="POST">
+                                <div class="modal-body">
+                                    <?php if (isset($erreurs['global'])) { ?>
+                                        <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
+                                    <?php } ?>
+                                    <div class="form-group mb-3">
+                                        <label for="">Nom du produit:</label>
+                                        <input type="text" class="form-control" id='nom' name="nom" placeholder="Nom">
+                                        
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Producteurs:</label>
+                                        <input type="text" class="form-control" id='producteurs' name="producteurs" placeholder="Producteurs">
+                                        
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Prix:</label>
+                                        <input type="number" class="form-control" id='prix' name="prix" placeholder="Prix">
+                                        
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Stock:</label>
+                                        <input type="number" class="form-control" id='stock' name="stock" placeholder="Stock">
+                                        
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" name="modifie" class="btn btn-primary">Modifier</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Detail Modal -->
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
@@ -237,7 +317,7 @@ include('header.php');
                                 <td><?= $produit['stock'] ?></td>
                                 <td>
                                     <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                    <a href="edit.php?nom=<?= $produit['nom'] ?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
+                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
                                     <a href="delete.php?nom=<?= $produit['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
                                 </td>
 

@@ -1,133 +1,56 @@
 <?php
 session_start();
-
-if (empty($_GET['nom'])) {
-    $_SESSION['erreur'] = "URL non valide";
-    header('Location: produits.php');
-    exit;
-}
-
 require_once('db_connect.php');
 
-$nom = strip_tags($_GET['nom']);
+if (isset($_POST['click_edit_btn'])) {
+    $nom = $_POST['nom1'];
 
-$sql = 'SELECT * FROM `produits` WHERE `nom` = :nom';
-$query = $db->prepare($sql);
-$query->bindValue(':nom', $nom, PDO::PARAM_STR);
-$query->execute();
-$produit = $query->fetch();
+    $arrayresult = [];
 
-if (!$produit) {
-    $_SESSION['erreur'] = "Produit non trouvé";
-    header('Location: produits.php');
-    exit;
+    $sql = "SELECT * FROM produits WHERE nom=:nom";
+    $query = $db->prepare($sql);
+    $query->bindParam(':nom', $nom, PDO::PARAM_STR);
+    $query->execute();
+
+    if ($query->rowCount() > 0) {
+        while ($row = $query->fetch(PDO::FETCH_ASSOC)) {
+            array_push($arrayresult, $row);
+        }
+        header('Content-Type: application/json');
+        echo json_encode($arrayresult);
+    } else {
+        echo '<h4>Aucun enregistrement trouvé</h4>';
+    }
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['modifier'])) {
-        // Récupérer les données du formulaire pour la mise à jour
-        $producteurs = filter_input(INPUT_POST, 'producteurs', FILTER_SANITIZE_STRING);
-        $prix = filter_input(INPUT_POST, 'prix', FILTER_VALIDATE_FLOAT);
-        $stock = filter_input(INPUT_POST, 'stock', FILTER_VALIDATE_INT);
+/*Modifier*/
+if (isset($_POST['modifie'])) {
 
-        // Valider les données
-        if ($producteurs && $prix !== false && $stock !== false) {
-            // Mettre à jour le produit dans la base de données
-            $sql = 'UPDATE `produits` SET `producteurs` = :producteurs, `prix` = :prix, `stock` = :stock WHERE `nom` = :nom';
-            $query = $db->prepare($sql);
-            $query->bindParam(':producteurs', $producteurs, PDO::PARAM_STR);
-            $query->bindParam(':prix', $prix, PDO::PARAM_STR);
-            $query->bindParam(':stock', $stock, PDO::PARAM_INT);
-            $query->bindParam(':nom', $nom, PDO::PARAM_STR);
+    $nom = $_POST['nom'];
+    $producteurs = $_POST['producteurs'];
+    $prix = $_POST['prix'];
+    $stock = $_POST['stock'];
 
-            if ($query->execute()) {
-                $_SESSION['message'] = "Produit modifié avec succès";
-                header('Location: produits.php');
-                exit;
-            } else {
-                $_SESSION['erreur'] = "Une erreur est survenue lors de la mise à jour du produit.";
-            }
-        } else {
-            $_SESSION['erreur'] = "Veuillez remplir tous les champs correctement.";
-        }
+    $modifie_sql = "UPDATE produits SET producteurs=:producteurs, prix=:prix, stock=:stock WHERE nom=:nom";
+    $query = $db->prepare($modifie_sql);
+    $query->bindParam(':producteurs', $producteurs, PDO::PARAM_STR);
+    $query->bindParam(':prix', $prix, PDO::PARAM_INT);
+    $query->bindParam(':stock', $stock, PDO::PARAM_INT);
+    $query->bindParam(':nom', $nom, PDO::PARAM_STR);
+    $result = $query->execute();
+
+    if ($result) {
+        echo '<script language="javascript">';
+        echo 'alert("Modifier avec succès");';
+        echo 'window.location = "produits.php";';
+        echo '</script>';
+        exit();
+    } else {
+        echo '<script language="javascript">';
+        echo 'alert("Il y a eu une erreur");';
+        echo 'window.location = "produits.php";';
+        echo '</script>';
+        exit();
     }
 }
 ?>
-
-<?php
-$pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Modifier le produit</span>";
-include('header.php');
-?>
-
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modifier le produit</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <style>
-        /* Ajoutez du style CSS pour mettre les noms en gras */
-        label {
-            font-weight: bold;
-        }
-
-        /* Raccourcir la largeur des champs de texte */
-        .short-input {
-            max-width: 50%; /* Vous pouvez ajuster cette valeur selon vos préférences */
-        }
-
-        /* Ajouter un espace entre le titre h1 et le reste des éléments du formulaire */
-        .form-container {
-            margin-top: 70px; /* Vous pouvez ajuster cette valeur selon vos préférences */
-        
-        }
-        body{
-            margin-top: 20px;
-            
-        }
-        .btn{
-            margin-left: 370px;
-        } .ml-3 {
-            margin-left: 10px; /* Espacement horizontal entre les boutons */
-        }
-    </style>
-    <script>
-        // Fonction pour afficher la fenêtre pop-up avec le message
-        function afficherPopup(message) {
-            alert(message);
-        }
-    </script>
-</head>
-<body>
-    <main class="container">
-        <div class="row">
-            <section class="col-12">
-                <h1 style='margin-left: 225px;'>Modifier le produit  </h1><br>
-                <form method="post" style='margin-left: 225px;'>
-                    <div class="form-group">
-                        <label for="nom">Nom du produit:</label>
-                        <input type="text" name="nom" class="form-control short-input" value="<?= $produit['nom'] ?>" readonly><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="producteurs">Producteurs:</label>
-                        <input type="text" name="producteurs" class="form-control short-input" value="<?= $produit['producteurs'] ?>"><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="prix">Prix du produit:</label>
-                        <input type="number" name="prix" class="form-control short-input" value="<?= $produit['prix'] ?>"><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="stock">Stock:</label>
-                        <input type="number" name="stock" class="form-control short-input" value="<?= $produit['stock'] ?>"><br>
-                    </div>
-                    <div>
-                        <button class="btn btn-primary" type="submit" name="modifier" onclick="afficherPopup('Produit modifié avec succès')">Modifier</button>
-                        <a href="produits.php" class="btn btn-primary ml-3">Retour</a> 
-                    </div>
-                </form>
-            </section>
-        </div>
-    </main>
-</body>
-</html>

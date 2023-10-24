@@ -131,6 +131,40 @@ include('header.php');
 </head>
 
 <body>
+
+    <!--Modifie-->
+    <script>
+        $(document).ready(function() {
+            $('.edit_data').click(function(e) {
+                e.preventDefault();
+
+                var num1 = $(this).closest('tr').find('.num1').text();
+
+                $.ajax({
+                    method: "POST",
+                    url: "edit_achat.php", // Modifiez ici le lien vers detailEntree.php
+                    data: {
+                        'click_edit_btn': true,
+                        'num1': num1,
+                    },
+                    success: function(response) {
+                        $.each(response, function(Key, value) {
+                            /*console.log(value['prix']);*/
+
+                            $('#numAchat').val(value['numAchat']);
+                            $('#nom').val(value['nom']);
+                            $('#nbr').val(value['nbr']);
+                            $('#date_achat').val(value['date_achat']);
+                        });
+                        $('#editproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
+
+    <!--detail-->
     <script>
         $(document).ready(function() {
             $('.view_data').click(function(e) {
@@ -170,6 +204,45 @@ include('header.php');
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
+
+                <!-- Modifie-Modal -->
+                <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel">Ajouter un Entrer</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="edit_achat.php" method="POST">
+                                <div class="modal-body">
+                                    <?php if (isset($erreurs['global'])) { ?>
+                                        <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
+                                    <?php } ?>
+                                    <div class="form-group mb-3">
+                                        <label for="">Numéro d'entrée:</label>
+                                        <input type="text" class="form-control" id='numAchat' name="numAchat" placeholder="Numero">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Nom du produit:</label>
+                                        <input type="text" class="form-control" id='nom' name="nom" placeholder="Nom">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Stock sortie:</label>
+                                        <input type="number" class="form-control" id='nbr' name="nbr" placeholder="Stock">
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Date d'achat:</label>
+                                        <input type="date" class="form-control" id='date_achat' name="date_achat">
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" name="modifie" class="btn btn-primary">Ajouter</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Detail Modal -->
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
@@ -275,7 +348,7 @@ include('header.php');
                                 <td><?= $produit['date_achat'] ?></td>
                                 <td>
                                     <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                    <a href="edit_achat.php?numAchat=<?= $produit['numAchat'] ?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
+                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
                                     <a href="delete_achat.php?numAchat=<?= $produit['numAchat'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
                                 </td>
                             </tr>

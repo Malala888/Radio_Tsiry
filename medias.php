@@ -132,6 +132,51 @@ include('header.php');
 </head>
 
 <body>
+
+    <!--Modifier-->
+    <script>
+        $(document).ready(function() {
+            $('.edit_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                console.log(nom1);
+
+                $.ajax({
+                    method: "POST",
+                    url: "modifier.php",
+                    data: {
+                        'click_edit_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        /* console.log(response);*/
+                        $.each(response, function(Key, value) {
+                            /*console.log(value['prix']);*/
+
+                            $('#nom').val(value['nom']);
+                            $('#type').val(value['type']);
+                            $('#DatePaye').val(value['DatePaye']);
+                            $('#date_debut').val(value['date_debut']);
+                            $('#date_fin').val(value['date_fin']);
+                            $('#situation').val(value['situation']);
+                            $('#type_payement').val(value['type_payement']);
+                            $('#montant').val(value['montant']);
+                            $('#matin').val(value['matin']);
+                            $('#midi').val(value['midi']);
+                            $('#soir').val(value['soir']);
+                            $('#nbr_diffusion').val(value['nbr_diffusion']);
+                        });
+
+                        $('#editproductModal').modal('show');
+                    }
+                });
+
+            });
+        });
+    </script>
+
+<!--Detail-->
     <script>
         $(document).ready(function() {
             $('.view_data').click(function(e) {
@@ -172,6 +217,78 @@ include('header.php');
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
+
+                <!-- Modifier-Modal -->
+                <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel">Modifier un média</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="add.php" method="POST">
+                                <div class="modal-body">
+                                    <?php if (isset($erreurs['global'])) { ?>
+                                        <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
+                                    <?php } ?>
+                                    <div class="form-group mb-3">
+                                        <label for="">Nom du médias:</label>
+                                        <input type="text" class="form-control" id='nom' name="nom" placeholder="Nom">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Type du produit:</label>
+                                        <input type="text" class="form-control" id='type' name="type" placeholder="Type">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Date de payement:</label>
+                                        <input type="date" class="form-control" id='DatePaye' name="DatePaye" placeholder="DatePaye">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Date de début:</label>
+                                        <input type="date" class="form-control" id='date_debut' name="date_debut" placeholder="date_debut">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Date de la fin:</label>
+                                        <input type="date" class="form-control" id='date_fin' name="date_fin" placeholder="date_fin">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Situation:</label>
+                                        <input type="text" class="form-control" id='situation' name="situation" placeholder="situation">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Type de payement:</label>
+                                        <input type="text" class="form-control" id='type_payement' name="type_payement" placeholder="type_payement">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Montant:</label>
+                                        <input type="number" class="form-control" id='montant' name="montant" placeholder="montant">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Matin:</label>
+                                        <input type="text" class="form-control" id='matin' name="matin" placeholder="matin">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Midi:</label>
+                                        <input type="text" class="form-control" id='midi' name="midi" placeholder="midi">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Soir:</label>
+                                        <input type="text" class="form-control" id='soir' name="soir" placeholder="soir">    
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="">Nombre de diffusion:</label>
+                                        <input type="int" class="form-control" id='nbr_diffusion' name="nbr_diffusion" placeholder="nbr_diffusion">    
+                                    </div>
+                                    
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" name="modifie" class="btn btn-primary">Modifier</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Detail Modal -->
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
@@ -267,7 +384,7 @@ include('header.php');
                                     <td>
                                         <div style="display: flex; align-items: center;">
                                             <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="modifier.php?nom=<?= $media['nom'] ?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
+                                            <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
                                             <a href="supprimer.php?nom=<?= $media['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
                                         </div>
                                     </td>
