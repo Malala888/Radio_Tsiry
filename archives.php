@@ -41,9 +41,6 @@ if (isset($_POST['moveToArchives'])) {
 
     // Boucle à travers les éléments sélectionnés
     foreach ($selectedItems as $selectedItem) {
-        // Vous devez exécuter une requête d'insertion dans la table "archives"
-        // pour déplacer ces éléments. Voici un exemple :
-
         // Requête d'insertion
         $insertSql = "INSERT INTO `archives` SELECT * FROM `medias` WHERE `nom` = :selectedItem";
 
@@ -56,7 +53,19 @@ if (isset($_POST['moveToArchives'])) {
         // Exécution de la requête d'insertion
         $insertQuery->execute();
 
-        // Après avoir inséré l'élément dans les archives, vous pouvez le supprimer de la table des archives
+        // Requête de mise à jour de la colonne 'situation'
+        $updateSql = "UPDATE `archives` SET `situation` = 'Terminé' WHERE `nom` = :selectedItem";
+
+        // Préparation de la requête de mise à jour
+        $updateQuery = $db->prepare($updateSql);
+
+        // Liaison du paramètre
+        $updateQuery->bindValue(':selectedItem', $selectedItem, PDO::PARAM_STR);
+
+        // Exécution de la requête de mise à jour
+        $updateQuery->execute();
+
+        // Requête de suppression
         $deleteSql = "DELETE FROM `medias` WHERE `nom` = :selectedItem";
 
         // Préparation de la requête de suppression
@@ -86,6 +95,7 @@ $queryArchives->execute();
 // Stocker le résultat des archives dans un tableau associatif
 $archivesResult = $queryArchives->fetchAll();
 ?>
+
 
 <?php
 $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des archives";
@@ -139,9 +149,60 @@ include('header.php');
 </head>
 
 <body>
+
+        <!--essaie-->
+        <script>
+        $(document).ready(function() {
+            $('#periode').change(function() {
+                var selectedValue = $(this).val();
+                $.ajax({
+                    method: "GET",
+                    url: "fetch_data2.php", // Remplacez fetch_data.php par votre script de récupération de données
+                    data: {
+                        periode: selectedValue
+                    },
+                    success: function(response) {
+                        // Mettre à jour le tableau avec les données récupérées
+                        // Assurez-vous d'avoir un élément dans votre page HTML avec l'ID approprié pour mettre à jour le contenu du tableau
+                        $('#table-body').html(response);
+                    }
+                });
+            });
+        });
+    </script>
+
+        <!--Efface-->
+        <script>
+        $(document).ready(function() {
+            $('.delete_data').click(function(e) {
+                e.preventDefault();
+
+                var nom1 = $(this).closest('tr').find('.nom1').text();
+                /*console.log(nom1); */
+                $('#confirm_delete').val(nom1)
+                $('#deleteproductModal').modal('show');
+
+                $.ajax({
+                    method: "POST",
+                    url: "supprimer_archive.php",
+                    data: {
+                        'click_delete_btn': true,
+                        'nom1': nom1,
+                    },
+                    success: function(response) {
+                        console.log(response);
+
+                    }
+                });
+
+            });
+        });
+    </script>
+
+    <!--Detail-->
     <script>
         $(document).ready(function() {
-            $('.view_data').click(function(e) {
+            $(document).on('click', '.view_data', function(e) {
                 e.preventDefault();
 
                 var nom1 = $(this).closest('tr').find('.nom1').text();
@@ -179,6 +240,28 @@ include('header.php');
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
 
+                                <!-- Efface Modal -->
+                                <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="deleteproductModalLabel">Suppression du médias</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="supprimer_archive.php" method="POST">
+                                <input type="hidden" class="form-control" name="nom1" id="confirm_delete">
+                                <div class="modal-body">
+                                    <h4>Voulez-vous vraiment supprimer ce produit?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Detail Modal -->
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -202,6 +285,12 @@ include('header.php');
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
                     <div class="d-flex">
+                    <select name="periode" id="periode" class="form-select" style=" margin-right: 100px; width: 120px; height: 38px; background-color: #007bff; color: #fff; border: 1px solid #007bff;">
+                            <option selected>Choisir</option>
+                            <option value="Matin">Matin</option>
+                            <option value="Après-midi">Midi</option>
+                            <option value="Soir">Soir</option>
+                        </select>
                         <div class="form-group">
                             <input type="text" name="search" class="form-control short-search-input" id="search">
                         </div>
@@ -212,7 +301,6 @@ include('header.php');
                 <form action="archives.php" method="post">
                     <table class="table my-4 mr-3" style="margin-right: 20px;">
                         <thead>
-                            <th></th>
                             <th>Nom</th>
                             <th>Type</th>
                             <th>DatePaye</th>
@@ -221,19 +309,15 @@ include('header.php');
                             <th>Etat</th>
                             <th>Paiement</th>
                             <th>Montant</th>
-                            <th>Matin</th>
-                            <th>Midi</th>
-                            <th>Soir</th>
                             <th>Diff</th>
                             <th class="audio-col">Audio</th>
                             <th>Action</th>
                         </thead>
-                        <tbody>
+                        <tbody id="table-body">
                             <?php
                             foreach ($result as $archive) {
                             ?>
                                 <tr>
-                                    <td><input type="checkbox" name="selected[]" value="<?= $archive['nom'] ?>"></td>
                                     <td class="nom1"><?= $archive['nom'] ?></td>
                                     <td><?= $archive['type'] ?></td>
                                     <td><?= $archive['DatePaye'] ?></td>
@@ -242,9 +326,6 @@ include('header.php');
                                     <td><?= $archive['situation'] ?></td>
                                     <td><?= $archive['type_payement'] ?></td>
                                     <td><?= $archive['montant'] ?></td>
-                                    <td><?= $archive['matin'] ?></td>
-                                    <td><?= $archive['midi'] ?></td>
-                                    <td><?= $archive['soir'] ?></td>
                                     <td><?= $archive['nbr_diffusion'] ?></td>
                                     <td class="audio-col" style="width: 200px; height: 40px;">
                                         <?php
@@ -260,7 +341,7 @@ include('header.php');
                                     <td>
                                         <div style="display: flex; align-items: center;">
                                             <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="supprimer_archive.php?nom=<?= $archive['nom'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                            <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
                                         </div>
                                     </td>
                                 </tr>

@@ -70,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $erreurs['global'] = "Une erreur est survenue lors de l'ajout du média : " . $stmt->errorInfo()[2];
         }
-
     } else {
         // Si un champ est vide ou invalide, ajoutez un message d'erreur approprié dans le tableau $erreurs
         if (!$nom) {
@@ -118,6 +117,7 @@ require_once('close.php');
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -140,7 +140,7 @@ require_once('close.php');
         }
 
         .btn {
-            margin-left: 640px;
+            margin-left: 550px;
         }
 
         .ml-3 {
@@ -148,13 +148,14 @@ require_once('close.php');
         }
     </style>
 </head>
+
 <body>
     <main class="container">
         <div class="row">
             <section class="col-12">
                 <h1 style='margin-top:30px; margin-left:90px;'>Ajouter un média</h1><br>
                 <!-- Afficher un message d'erreur global -->
-                <?php if(isset($erreurs['global'])) { ?>
+                <?php if (isset($erreurs['global'])) { ?>
                     <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
                 <?php } ?>
                 <form method="post" enctype="multipart/form-data">
@@ -162,107 +163,122 @@ require_once('close.php');
                         <label for="nom">Nom du média:</label>
                         <input type="text" name="nom" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['nom'])) { ?>
+                        <?php if (isset($erreurs['nom'])) { ?>
                             <span class="text-danger"><?= $erreurs['nom'] ?></span>
                         <?php } ?>
                     </div>
                     <div class="form-group" style='margin-left:90px;'>
                         <label for="type">Type du média:</label>
-                        <input type="text" name="type" class="form-control short-input"><br>
-                        <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['type'])) { ?>
-                            <span class="text-danger"><?= $erreurs['type'] ?></span>
-                        <?php } ?>
-                    </div>
-                    <div class="form-group" style='margin-left:90px;'> <!-- Champ pour "DatePaye" -->
+                        <select name="type" class="form-control short-input">
+                            <option value="Annonce">Annonce</option>
+                            <option value="PUB">PUB</option>
+                            <!--<option value="Chèque">Chèque</option>-->
+                        </select><br>
+                    <div class="form-group" style='margin-left:5px;'> <!-- Champ pour "DatePaye" -->
                         <label for="date_paye">Date de paiement:</label>
                         <input type="date" name="date_paye" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['date_paye'])) { ?>
+                        <?php if (isset($erreurs['date_paye'])) { ?>
                             <span class="text-danger"><?= $erreurs['date_paye'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="date_debut">Date de début:</label>
                         <input type="date" name="date_debut" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['date_debut'])) { ?>
+                        <?php if (isset($erreurs['date_debut'])) { ?>
                             <span class="text-danger"><?= $erreurs['date_debut'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="date_fin">Date de fin:</label>
                         <input type="date" name="date_fin" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['date_fin'])) { ?>
+                        <?php if (isset($erreurs['date_fin'])) { ?>
                             <span class="text-danger"><?= $erreurs['date_fin'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="situation">Situation:</label>
-                        <input type="text" name="situation" class="form-control short-input"><br>
+                        <select name="situation" class="form-control short-input">
+                            <option value="En cours">En cours</option>
+                            <option value="terminé">términé</option>
+                        </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['situation'])) { ?>
+                        <?php if (isset($erreurs['situation'])) { ?>
                             <span class="text-danger"><?= $erreurs['situation'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="type_payement">Type de paiement:</label>
-                        <input type="text" name="type_payement" class="form-control short-input"><br>
+                        <select name="type_payement" class="form-control short-input">
+                            <option value="En espèce">En espèce</option>
+                            <option value="Mobile money">Mobile money</option>
+                            <option value="Chèque">Chèque</option>
+                        </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['type_payement'])) { ?>
+                        <?php if (isset($erreurs['type_payement'])) { ?>
                             <span class="text-danger"><?= $erreurs['type_payement'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left: 5px;'>
                         <label for="montant">Montant:</label>
                         <input type="number" name="montant" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['montant'])) { ?>
+                        <?php if (isset($erreurs['montant'])) { ?>
                             <span class="text-danger"><?= $erreurs['montant'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="matin">Matin:</label>
-                        <input type="text" name="matin" class="form-control short-input"><br>
+                        <select name="matin" class="form-control short-input">
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['matin'])) { ?>
+                        <?php if (isset($erreurs['matin'])) { ?>
                             <span class="text-danger"><?= $erreurs['matin'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="midi">Midi:</label>
-                        <input type="text" name="midi" class="form-control short-input"><br>
+                        <select name="midi" class="form-control short-input">
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['midi'])) { ?>
+                        <?php if (isset($erreurs['midi'])) { ?>
                             <span class="text-danger"><?= $erreurs['midi'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="soir">Soir:</label>
-                        <input type="text" name="soir" class="form-control short-input"><br>
+                        <select name="soir" class="form-control short-input">
+                            <option value="oui">Oui</option>
+                            <option value="non">Non</option>
+                        </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['soir'])) { ?>
+                        <?php if (isset($erreurs['soir'])) { ?>
                             <span class="text-danger"><?= $erreurs['soir'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'>
+                    <div class="form-group" style='margin-left:5px;'>
                         <label for="nbr_diffusion">Nombre de diffusions:</label>
                         <input type="number" name="nbr_diffusion" class="form-control short-input"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['nbr_diffusion'])) { ?>
+                        <?php if (isset($erreurs['nbr_diffusion'])) { ?>
                             <span class="text-danger"><?= $erreurs['nbr_diffusion'] ?></span>
                         <?php } ?>
                     </div>
-                    <div class="form-group" style='margin-left:90px;'> <!-- Champ pour "audio" -->
+                    <div class="form-group" style='margin-left:5px;'> <!-- Champ pour "audio" -->
                         <label for="audio">Audio:</label>
                         <input type="file" name="audio" accept=".3pg, .mp3, .m4a, .wav, .m3u, .ogg" class="form-control-file"><br>
                         <!-- Afficher un message d'erreur sous le champ -->
-                        <?php if(isset($erreurs['audio'])) { ?>
+                        <?php if (isset($erreurs['audio'])) { ?>
                             <span class="text-danger"><?= $erreurs['audio'] ?></span>
                         <?php } ?>
                     </div>
-                    
+
                     <div>
                         <button class="btn btn-primary" type="submit">Ajouter</button>
                         <a href="achat.php" class="btn btn-primary ml-3">Retour</a>
@@ -272,4 +288,5 @@ require_once('close.php');
         </div>
     </main>
 </body>
+
 </html>

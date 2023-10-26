@@ -131,6 +131,33 @@ include('header.php');
 </head>
 
 <body>
+    <!--Efface-->
+    <script>
+        $(document).ready(function() {
+            $('.delete_data').click(function(e) {
+                e.preventDefault();
+
+                var num1 = $(this).closest('tr').find('.num1').text();
+                /*console.log(num1); */
+                $('#confirm_delete').val(num1)
+                $('#deleteproductModal').modal('show');
+
+                $.ajax({
+                    method: "POST",
+                    url: "delete_achat.php",
+                    data: {
+                        'click_delete_btn': true,
+                        'num1': num1,
+                    },
+                    success: function(response) {
+                        console.log(response);
+
+                    }
+                });
+
+            });
+        });
+    </script>
 
     <!--Modifie-->
     <script>
@@ -204,6 +231,28 @@ include('header.php');
                 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
+
+                <!-- Efface Modal -->
+                <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title" id="deleteproductModalLabel">Suppression de l'achat</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form action="delete_achat.php" method="POST">
+                                <input type="hidden" class="form-control" name="num1" id="confirm_delete">
+                                <div class="modal-body">
+                                    <h4>Voulez-vous vraiment supprimer cette achat?</h4>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Modifie-Modal -->
                 <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
@@ -349,7 +398,7 @@ include('header.php');
                                 <td>
                                     <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
                                     <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                    <a href="delete_achat.php?numAchat=<?= $produit['numAchat'] ?>"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                    <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
                                 </td>
                             </tr>
                         <?php
