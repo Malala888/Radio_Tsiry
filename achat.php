@@ -127,7 +127,28 @@ include('header.php');
         .idk_btn {
             margin-left: 10px;
         }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-form .btn-primary,
+        .modal-footer .btn-primary {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
+
+        .search-form .btn-secondary,
+        .search-form .btn-danger,
+        .modal-footer .btn-secondary,
+        .modal-footer .btn-danger {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
     </style>
+
 </head>
 
 <body>
@@ -246,7 +267,7 @@ include('header.php');
                                     <h4>Voulez-vous vraiment supprimer cette achat?</h4>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                     <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
                                 </div>
                             </form>
@@ -258,8 +279,8 @@ include('header.php');
                 <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="editproductModalLabel">Ajouter un Entrer</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel" style="color:white;">Modifier un achat</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="edit_achat.php" method="POST">
@@ -268,7 +289,7 @@ include('header.php');
                                         <div class="alert alert-danger"><?= $erreurs['global'] ?></div>
                                     <?php } ?>
                                     <div class="form-group mb-3">
-                                        <label for="">Numéro d'entrée:</label>
+                                        <label for="">Numéro d'achat:</label>
                                         <input type="text" class="form-control" id='numAchat' name="numAchat" placeholder="Numero">
                                     </div>
                                     <div class="form-group mb-3">
@@ -286,7 +307,7 @@ include('header.php');
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                    <button type="submit" name="modifie" class="btn btn-primary">Ajouter</button>
+                                    <button type="submit" name="modifie" class="btn btn-primary">Modifier</button>
                                 </div>
                             </form>
                         </div>
@@ -297,8 +318,8 @@ include('header.php');
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="viewproductModalLabel">Détail de l'entrée</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="viewproductModalLabel" style="color:white;">Détail de l'achat</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -307,7 +328,7 @@ include('header.php');
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
@@ -317,8 +338,8 @@ include('header.php');
                 <div class="modal fade" id="ajoutModal" tabindex="-1" aria-labelledby="ajoutModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="ajoutModalLabel">Ajouter un Entrer</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title fs-5" id="ajoutModalLabel" style="color:white;">Ajouter un achat</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="ajout_achat.php" method="POST">
@@ -375,7 +396,7 @@ include('header.php');
                 </form>
 
                 <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#ajoutModal">
-                    Ajout
+                    Ajouter
                 </button>
 
                 <table class="table">
@@ -397,8 +418,8 @@ include('header.php');
                                 <td><?= $produit['date_achat'] ?></td>
                                 <td>
                                     <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                    <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
+                                    <a href="#" class="delete_data"><i class='bx bx-trash' style='color: red;'></i></a>
                                 </td>
                             </tr>
                         <?php
@@ -406,19 +427,19 @@ include('header.php');
                         ?>
                     </tbody>
                 </table>
-                <div class="d-flex" style="margin-top: 20px; margin-left: 400px;">
+                <div class="d-flex" style="margin-top: 20px; margin-left: 255px;">
                     <!-- Formulaire de recherche par date -->
-                    <form method="get" class="search-form">
-                        <div class="form-group d-flex" style="margin-left:px;">
+                    <form method="get" class="search-form" style="display: flex; align-items: center;">
+                        <div class="form-group d-flex" style="margin-left: 0;">
                             <input type="date" name="search_date" class="form-control short-search-input" id="search_date">
                             <button type="submit" class="btn btn-primary search-btn" style="margin-left: 10px;">Recette</button>
                         </div>
                     </form>
-                    <a href="produits.php" class="btn btn-primary idk_btn" style="margin-left: 10px;">Retour</a>
+                    <a href="produits.php" class="btn btn-primary idk_btn" style="margin-left: 10px; height: 40px; line-height: 20px; padding: 5px 14px;">Retour</a>
+                    <a href="histogramme2.php" class="btn btn-primary idk_btn" style="margin-left: 10px; height: 40px; line-height: 20px; padding: 5px 14px;">Histogramme</a>
                 </div>
-            </section>
+
         </div>
-    </div>
 </body>
 
 </html>

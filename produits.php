@@ -87,6 +87,23 @@ include('header.php');
             margin-left: 10px;
             /* Espacement horizontal entre les boutons */
         }
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-secondary,
+        .btn-danger {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+           display: inline-block;
+            margin: 0 10px !important; 
+        }
     </style>
 </head>
 
@@ -127,8 +144,8 @@ include('header.php');
         });
     </script>
 
-        <!--Efface-->
-        <script>
+    <!--Efface-->
+    <script>
         $(document).ready(function() {
             $('.delete_data').click(function(e) {
                 e.preventDefault();
@@ -201,8 +218,8 @@ include('header.php');
                 <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="deleteproductModalLabel">Suppression du produit</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="deleteproductModalLabel" style="color:white;">Suppression du produit</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="delete.php" method="POST">
@@ -211,7 +228,7 @@ include('header.php');
                                     <h4>Voulez-vous vraiment supprimer ce produit?</h4>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                     <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
                                 </div>
                             </form>
@@ -223,8 +240,8 @@ include('header.php');
                 <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="editproductModalLabel">Modifier un produit</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel" style="color: white;">Modifier un produit</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="edit.php" method="POST">
@@ -266,8 +283,8 @@ include('header.php');
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="viewproductModalLabel">Détail du produits</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="viewproductModalLabel" style="color:white;">Détail du produits</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -276,7 +293,7 @@ include('header.php');
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
@@ -286,8 +303,8 @@ include('header.php');
                 <div class="modal fade" id="ajoutModal" tabindex="-1" aria-labelledby="ajoutModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="ajoutModalLabel">Ajouter un produit</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title fs-5" id="ajoutModalLabel" style="color:white;">Ajouter un produit</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="add.php" method="POST">
@@ -344,7 +361,7 @@ include('header.php');
                 </form>
 
                 <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#ajoutModal">
-                    Ajout
+                    Ajouter
                 </button>
 
                 <table class="table">
@@ -366,8 +383,8 @@ include('header.php');
                                 <td><?= $produit['stock'] ?></td>
                                 <td>
                                     <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                    <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                    <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
+                                    <a href="#" class="delete_data"><i class='bx bx-trash' style='color: red;'></i></a>
                                 </td>
 
                             </tr>
@@ -376,7 +393,7 @@ include('header.php');
                         ?>
                     </tbody>
                 </table>
-                <div>
+                <div style="margin-left: 900px;">
                     <a href="entrer.php" class="btn btn-primary idk_btn"> Entrer</a>
                     <a href="achat.php" class="btn btn-primary ml-3">Achat</a>
                 </div>

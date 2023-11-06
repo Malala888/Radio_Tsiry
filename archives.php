@@ -110,7 +110,7 @@ include('header.php');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
     <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="bootstrap-5.3.1-dist/css/bootstrap.css">
     <style>
         /* Styles CSS pour la mise en page */
         .table {
@@ -145,25 +145,35 @@ include('header.php');
             text-overflow: ellipsis;
             white-space: nowrap;
         }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-secondary,
+        .btn-danger {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
     </style>
 </head>
 
 <body>
 
-        <!--essaie-->
-        <script>
+    <!--essaie-->
+    <script>
         $(document).ready(function() {
             $('#periode').change(function() {
                 var selectedValue = $(this).val();
                 $.ajax({
                     method: "GET",
-                    url: "fetch_data2.php", // Remplacez fetch_data.php par votre script de récupération de données
+                    url: "fetch_data2.php",
                     data: {
                         periode: selectedValue
                     },
                     success: function(response) {
-                        // Mettre à jour le tableau avec les données récupérées
-                        // Assurez-vous d'avoir un élément dans votre page HTML avec l'ID approprié pour mettre à jour le contenu du tableau
                         $('#table-body').html(response);
                     }
                 });
@@ -171,14 +181,13 @@ include('header.php');
         });
     </script>
 
-        <!--Efface-->
-        <script>
+    <!--Efface-->
+    <script>
         $(document).ready(function() {
             $('.delete_data').click(function(e) {
                 e.preventDefault();
 
                 var nom1 = $(this).closest('tr').find('.nom1').text();
-                /*console.log(nom1); */
                 $('#confirm_delete').val(nom1)
                 $('#deleteproductModal').modal('show');
 
@@ -206,7 +215,7 @@ include('header.php');
                 e.preventDefault();
 
                 var nom1 = $(this).closest('tr').find('.nom1').text();
-                /*console.log(nom1); */
+
 
                 $.ajax({
                     method: "POST",
@@ -216,7 +225,7 @@ include('header.php');
                         'nom1': nom1,
                     },
                     success: function(response) {
-                        /*console.log(response);*/
+
 
                         $('.view_product').html(response);
                         $('#viewproductModal').modal('show');
@@ -236,16 +245,16 @@ include('header.php');
                 }
                 ?>
                 <h1 style=' margin-left: 40px;'>Liste des archives </h1>
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                <script src="bootstrap-5.3.1-dist/js/bootstrap.bundle.min.js"></script>
                 <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
                 </script>
 
-                                <!-- Efface Modal -->
-                                <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
+                <!-- Efface Modal -->
+                <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="deleteproductModalLabel">Suppression du médias</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="deleteproductModalLabel" style="color: white;">Suppression du médias</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="supprimer_archive.php" method="POST">
@@ -253,8 +262,8 @@ include('header.php');
                                 <div class="modal-body">
                                     <h4>Voulez-vous vraiment supprimer ce produit?</h4>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                     <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
                                 </div>
                             </form>
@@ -262,12 +271,13 @@ include('header.php');
                     </div>
                 </div>
 
+
                 <!-- Detail Modal -->
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="viewproductModalLabel">Détail du médias</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="viewproductModalLabel" style="color:white;">Détail du médias</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -276,7 +286,7 @@ include('header.php');
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
@@ -285,7 +295,7 @@ include('header.php');
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
                     <div class="d-flex">
-                    <select name="periode" id="periode" class="form-select" style=" margin-right: 100px; width: 120px; height: 38px; background-color: #007bff; color: #fff; border: 1px solid #007bff;">
+                        <select name="periode" id="periode" class="form-select" style=" margin-right: 100px; width: 120px; height: 38px; background-color: #007bff; color: #fff; border: 1px solid #007bff;">
                             <option selected>Choisir</option>
                             <option value="Matin">Matin</option>
                             <option value="Après-midi">Midi</option>
@@ -341,7 +351,7 @@ include('header.php');
                                     <td>
                                         <div style="display: flex; align-items: center;">
                                             <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                            <a href="#" class="delete_data"><i class='bx bx-trash' style='color: red;'></i></a>
                                         </div>
                                     </td>
                                 </tr>

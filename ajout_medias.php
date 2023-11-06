@@ -215,6 +215,8 @@ require_once('close.php');
                             <option value="En espèce">En espèce</option>
                             <option value="Mobile money">Mobile money</option>
                             <option value="Chèque">Chèque</option>
+                            <option value="Virement">Chèque</option>
+                            <option value="A payer">Chèque</option>
                         </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
                         <?php if (isset($erreurs['type_payement'])) { ?>

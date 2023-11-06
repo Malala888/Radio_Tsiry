@@ -36,8 +36,11 @@ if (isset($_GET['search_date'])) {
     // Nettoyer et stocker la date de recherche
     $searchDate = strip_tags($_GET['search_date']);
 
-    // Requête SQL pour calculer le montant total pour la date donnée
-    $sqlDate = "SELECT SUM(montant) AS montant_total FROM medias WHERE DatePaye = :searchDate";
+    // Requête SQL pour calculer le montant total pour la date donnée dans les deux tables
+    $sqlDate = "SELECT SUM(montant) AS montant_total FROM 
+                (SELECT montant FROM medias WHERE DatePaye = :searchDate 
+                 UNION ALL 
+                 SELECT montant FROM archives WHERE DatePaye = :searchDate) AS combined_table";
 
     // Préparation de la requête
     $queryDate = $db->prepare($sqlDate);
@@ -127,6 +130,36 @@ include('header.php');
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-secondary,
+        .btn-danger {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
+
+        .btn-secondary,
+        .btn-primary {
+            display: inline-block;
+            margin: 0 10px !important;
+        }
+
+        .icon-blue {
+            color: blue;
+        }
+
+        .icon-yellow {
+            color: #ffff00;
+        }
+
+        .icon-red {
+            color: #ff0000;
         }
     </style>
 </head>
@@ -272,8 +305,8 @@ include('header.php');
                 <div class="modal fade" id="deleteproductModal" tabindex="-1" aria-labelledby="deleteproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="deleteproductModalLabel">Suppression du médias</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="deleteproductModalLabel" style="color:white;">Suppression du médias</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="supprimer.php" method="POST">
@@ -282,7 +315,7 @@ include('header.php');
                                     <h4>Voulez-vous vraiment supprimer ce produit?</h4>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                                     <button type="submit" name="efface" class="btn btn-danger">Supprimer</button>
                                 </div>
                             </form>
@@ -294,8 +327,8 @@ include('header.php');
                 <div class="modal fade" id="editproductModal" tabindex="-1" aria-labelledby="editproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="editproductModalLabel">Modifier un média</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title fs-5" id="editproductModalLabel" style="color:white;">Modifier un média</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <form action="modifier.php" method="POST">
@@ -336,6 +369,8 @@ include('header.php');
                                             <option value="En espèce">En espèce</option>
                                             <option value="Mobile money">Mobile money</option>
                                             <option value="Chèque">Chèque</option>
+                                            <option value="Virement">Chèque</option>
+                                            <option value="A payer">Chèque</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
@@ -383,8 +418,8 @@ include('header.php');
                 <div class="modal fade" id="viewproductModal" tabindex="-1" aria-labelledby="viewproductModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title" id="viewproductModalLabel">Détail du médias</h1>
+                            <div class="modal-header" style="background-color: blue;">
+                                <h1 class="modal-title" id="viewproductModalLabel" style="color:white;">Détail du médias</h1>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -393,7 +428,7 @@ include('header.php');
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                             </div>
                         </div>
                     </div>
@@ -404,7 +439,7 @@ include('header.php');
                 <!-- Formulaire de recherche -->
                 <form method="get" class="search-form">
                     <div class="d-flex">
-                        <select name="periode" id="periode" class="form-select" style=" margin-right: 100px; width: 120px; height: 38px; background-color: #007bff; color: #fff; border: 1px solid #007bff;">
+                        <select name="periode" id="periode" class="form-select" style=" margin-right: 185px; width: 120px; height: 38px; background-color: #007bff; color: #fff; border: 1px solid #007bff;">
                             <option selected>Choisir</option>
                             <option value="Matin">Matin</option>
                             <option value="Après-midi">Midi</option>
@@ -413,7 +448,7 @@ include('header.php');
                         <div class="form-group">
                             <input type="text" name="search" class="form-control short-search-input" id="search">
                         </div>
-                        <button type="submit" class="btn btn-primary search-btn"> <i class='bx bxs-search-alt-2'></i> Rechercher</button>
+                        <button type="submit" class="btn btn-primary search-btn"> <i class='bx bxs-search-alt-2'></i></button>
                         <a href="ajout_medias.php" class="btn btn-primary" style="margin-left: 30px;">Ajouter</a>
                     </div>
                 </form>
@@ -474,10 +509,11 @@ include('header.php');
 
                                     <td>
                                         <div style="display: flex; align-items: center;">
-                                            <a href="#" class="view_data"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                            <a href="#" class="delete_data"><i class='bx bx-trash' style='color: blue;'></i></a>
+                                            <a href="#" class="view_data"><i class='bx bx-show-alt icon-blue'></i></a>
+                                            <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
+                                            <a href="#" class="delete_data"><i class='bx bx-trash icon-red'></i></a>
                                         </div>
+
                                     </td>
                                 </tr>
                             <?php
@@ -485,9 +521,13 @@ include('header.php');
                             ?>
                         </tbody>
                     </table>
-
-                    <div style='margin-left: 635px;'>
-                        <input type="submit" name="moveToArchives" class="btn btn-primary" value="Archivés">
+                    <div style="display: flex; margin-left: 845px;">
+                        <div style="margin-right: 10px;">
+                            <input type="submit" name="moveToArchives" class="btn btn-primary" value="Archivés">
+                        </div>
+                        <div>
+                            <input type="button" name="historique" class="btn btn-primary" value="Historique" onclick="window.location.href='historique.php'">
+                        </div>
                     </div>
                 </form>
             </section>

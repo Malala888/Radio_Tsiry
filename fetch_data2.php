@@ -60,8 +60,7 @@ if (isset($_GET['periode'])) {
         $output .= "<td>";
         $output .= "<div style='display: flex; align-items: center;'>";
         $output .= "<a href='#' class='view_data'><i class='bx bx-show-alt' style='color: blue;'></i></a>";
-        //$output .= "<a href='#' class='edit_data'><i class='bx bx-edit-alt' style='color: blue;'></i></a>";
-        $output .= "<a href='supprimer.php?nom={$archive['nom']}'><i class='bx bx-trash' style='color: blue;'></i></a>";
+        $output .= "<a href='supprimer.php?nom={$archive['nom']}'><i class='bx bx-trash' style='color: red;'></i></a>";
         $output .= "</div>";
         $output .= "</td>";
         $output .= "</tr>";
