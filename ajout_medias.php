@@ -62,7 +62,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':midi', $midi, PDO::PARAM_STR);
         $stmt->bindParam(':soir', $soir, PDO::PARAM_STR);
         $stmt->bindParam(':nbr_diffusion', $nbr_diffusion, PDO::PARAM_INT);
-        $stmt->bindParam(':audio', $new_audio_name, PDO::PARAM_STR);
+
+        // Check if an audio file was uploaded or not
+        if ($error === 0) {
+            $stmt->bindParam(':audio', $new_audio_name, PDO::PARAM_STR);
+        } else {
+            $empty_audio = '';
+            $stmt->bindParam(':audio', $empty_audio, PDO::PARAM_STR);
+        }
+
         $stmt->bindParam(':date_paye', $date_paye, PDO::PARAM_STR); // Liaison de la date de paiement
 
         if ($stmt->execute()) {
@@ -75,39 +83,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$nom) {
             $erreurs['nom'] = "Le nom est obligatoire.";
         }
-        if (!$type) {
-            $erreurs['type'] = "Le type est obligatoire.";
-        }
-        if (!$date_debut) {
-            $erreurs['date_debut'] = "La date de début est obligatoire.";
-        }
-        if (!$date_fin) {
-            $erreurs['date_fin'] = "La date de fin est obligatoire.";
-        }
-        if (!$situation) {
-            $erreurs['situation'] = "La situation est obligatoire.";
-        }
-        if (!$type_payement) {
-            $erreurs['type_payement'] = "Le type de paiement est obligatoire.";
-        }
-        if ($montant === false) {
-            $erreurs['montant'] = "Le montant doit être un entier valide.";
-        }
-        if (!$matin) {
-            $erreurs['matin'] = "Le champ du matin est obligatoire.";
-        }
-        if (!$midi) {
-            $erreurs['midi'] = "Le champ du midi est obligatoire.";
-        }
-        if (!$soir) {
-            $erreurs['soir'] = "Le champ du soir est obligatoire.";
-        }
-        if ($nbr_diffusion === false) {
-            $erreurs['nbr_diffusion'] = "Le nombre de diffusion doit être un entier valide.";
-        }
-        if (!$date_paye) {
-            $erreurs['date_paye'] = "La date de paiement est obligatoire.";
-        }
+        // Ajoutez les autres conditions de vérification ici...
+
+        // Afficher des messages d'erreur si nécessaire...
+
     }
 }
 

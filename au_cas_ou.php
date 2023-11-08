@@ -1,241 +1,78 @@
 <?php
-session_start();
-
 // Inclure la connexion à la base de données
 require_once('db_connect.php');
 
-// Initialiser la variable de recherche par nom
-$searchTerm = '';
+// Initialiser la variable $error
+$error = null;
 
-// Initialiser la variable de recherche par DatePaye
-$searchDate = '';
+// Vérifier si un formulaire pour l'ajout d'audio a été soumis
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Vérifier les données soumises et traiter le téléchargement de l'audio pour l'enregistrement spécifié
+    $nom = filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING);
+    if ($nom) {
+        // Traitement du téléchargement de l'audio pour cet enregistrement spécifique
 
-// Vérifier si une recherche par nom a été soumise
-if (isset($_GET['search'])) {
-    // Nettoyer et stocker le terme de recherche
-    $searchTerm = '%' . strip_tags($_GET['search']) . '%';
+        // Vérifier s'il y a un fichier audio téléchargé
+        if (isset($_FILES['audio'])) {
+            $audio_name = $_FILES['audio']['name'];
+            $tmp_name = $_FILES['audio']['tmp_name'];
+            $error = $_FILES['audio']['error'] ?? 0; // Utilisation de la syntaxe ?? pour éviter les valeurs null
 
-    // Requête SQL pour rechercher des médias par nom
-    $sql = 'SELECT * FROM `medias` WHERE `nom` LIKE :searchTerm';
+            if ($error === 0) {
+                // Ajoutez ici votre logique de traitement de fichier audio
+                $target_dir = "uploads/"; // Dossier de destination pour les fichiers téléchargés
+                $new_audio_name = uniqid("audio-", true) . '_' . $audio_name; // Génère un nouveau nom de fichier unique
+                $target_file = $target_dir . $new_audio_name; // Chemin complet du fichier de destination
 
-    // Préparation de la requête
-    $query = $db->prepare($sql);
-
-    // Liaison du paramètre de recherche par nom
-    $query->bindValue(':searchTerm', $searchTerm, PDO::PARAM_STR);
-} else {
-    // Si aucune recherche par nom n'a été soumise, récupérez tous les médias
-    $sql = 'SELECT * FROM `medias`';
-
-    // Préparation de la requête
-    $query = $db->prepare($sql);
-}
-
-// Vérifier si une recherche par DatePaye a été soumise
-if (isset($_GET['search_date'])) {
-    // Nettoyer et stocker la date de recherche
-    $searchDate = strip_tags($_GET['search_date']);
-
-    // Requête SQL pour calculer le montant total pour la date donnée
-    $sqlDate = "SELECT SUM(montant) AS montant_total FROM medias WHERE DatePaye = :searchDate";
-
-    // Préparation de la requête
-    $queryDate = $db->prepare($sqlDate);
-
-    // Liaison du paramètre de recherche par DatePaye
-    $queryDate->bindValue(':searchDate', $searchDate, PDO::PARAM_STR);
-
-    // Exécution de la requête
-    $queryDate->execute();
-
-    // Récupération du montant total
-    $rowDate = $queryDate->fetch(PDO::FETCH_ASSOC);
-    $montantTotal = $rowDate['montant_total'];
-
-    // Vérifier si un montant total a été retourné
-    if ($montantTotal !== null) {
-        // Afficher la somme totale dans une fenêtre pop-up
-        if (!isset($_GET['messageDisplayed'])) {
-            echo '<script>';
-            echo 'var montantTotal = ' . $montantTotal . ';';
-            echo 'alert("Le montant total est : " + montantTotal);';
-            echo 'window.location.href = "medias.php?messageDisplayed=true";';
-            echo '</script>';
+                if (move_uploaded_file($tmp_name, $target_file)) {
+                    // Mettez à jour la base de données avec le nom du fichier audio ajouté
+                    $sql = "UPDATE medias SET audio = :audio WHERE nom = :nom";
+                    $stmt = $db->prepare($sql);
+                    $stmt->bindParam(':audio', $new_audio_name, PDO::PARAM_STR);
+                    $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
+                    if ($stmt->execute()) {
+                        echo "Le fichier audio a été ajouté avec succès.";
+                    } else {
+                        echo "Une erreur est survenue lors de la mise à jour de la base de données.";
+                    }
+                } else {
+                    echo "Une erreur est survenue lors du téléchargement du fichier audio.";
+                }
+            } else {
+                echo "Une erreur est survenue lors de l'envoi du fichier audio : " . $error;
+            }
+        } else {
+            echo "Aucun fichier audio n'a été téléchargé.";
         }
     } else {
-        // Afficher un message si aucun montant n'a été calculé pour la date spécifiée
-        if (!isset($_GET['messageDisplayed'])) {
-            echo '<script>';
-            echo 'alert("Aucun montant n\'a été calculé pour la date spécifiée.");';
-            echo 'window.location.href = "medias.php?messageDisplayed=true";';
-            echo '</script>';
-        }
+        echo "Le nom de l'enregistrement est invalide.";
     }
 }
 
-// Exécutez la requête principale
-$query->execute();
-
-// Stocker le résultat dans un tableau associatif
-$result = $query->fetchAll();
+// Fermer la connexion à la base de données
+require_once('close.php');
 ?>
-
-<?php
-$pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des médias";
-include('header.php');
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-    <title><?php echo $pageTitle; ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
-    <style>
-        /* Styles CSS pour la mise en page */
-        .table {
-            margin-top: 20px;
-        }
-
-        .btn {
-            margin-left: 350px;
-        }
-
-        .search-form {
-            margin-top: 20px;
-            margin-left: 400px;
-        }
-
-        .search-btn {
-            margin-left: 10px;
-        }
-
-        .short-search-input {
-            max-width: 200px;
-            border-radius: 20px;
-        }
-
-        .mr-3 {
-            margin-right: 20px;
-        }
-
-        .audio-col {
-            max-width: 150px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-    </style>
+    <title>Ajouter un audio manquant</title>
 </head>
+
 <body>
-    <div class="container">
-        <div class="row">
-            <section class="col-12">
-                <?php 
-                if(!empty($_SESSION['ERREUR'])) 
-                {
-                    echo '<div class="alert alert-danger" role="alert">' . $_SESSION['message'] . '</div>';
-                    $_SESSION['ERREUR'] = "";
-                }
-                ?>
-                <h1 style=' margin-left: 40px;'>Liste des médias </h1>
-
-                <!-- Formulaire de recherche -->
-                <form method="get" class="search-form">
-                    <div class="d-flex">
-                        <div class="form-group">
-                            <input type="text" name="search" class="form-control short-search-input" id="search">
-                        </div>
-                        <button type="submit" class="btn btn-primary search-btn"> <i class='bx bxs-search-alt-2'></i></button>
-                        <a href="ajout_medias.php" class="btn btn-primary">Ajout</a>
-                    </div>
-                </form>
-
-                <!-- Formulaire de recherche par DatePaye -->
-                <form method="get" class="search-form">
-                    <div class="form-group d-flex" style="margin-left: 400px;">
-                        <input type="date" name="search_date" class="form-control short-search-input" id="search_date">
-                        <button type="submit" class="btn btn-primary search-btn" style="margin-left: 10px;">Calculer Montant Total</button>
-                    </div>
-                </form>
-
-                <!-- Tableau pour afficher les médias -->
-                <form action="archives.php" method="post">
-                    <table class="table my-4 mr-3" style="margin-right: 20px;">
-                        <!-- Insérez vos en-têtes de colonnes ici -->
-                        <thead>
-                            <th>Nom</th>
-                            <th>Type</th>
-                            <th>DatePaye</th>
-                            <th>Début</th>
-                            <th>Fin</th>
-                            <th>Etat</th>
-                            <th>Paiement</th>
-                            <th>Montant</th>
-                            <th>Matin</th>
-                            <th>Midi</th>
-                            <th>Soir</th>
-                            <th>Diff</th>
-                            <th class="audio-col">Audio</th>
-                            <th>Action</th>
-                        </thead>
-                        <tbody>
-                            <?php
-                            foreach ($result as $media) {
-                            ?>  
-                                <tr>
-                                    <td><?= $media['nom']?></td>
-                                    <td><?= $media['type']?></td>
-                                    <td><?= $media['DatePaye'] ?></td> 
-                                    <td><?= $media['date_debut']?></td>
-                                    <td><?= $media['date_fin']?></td>
-                                    <td><?= $media['situation']?></td>
-                                    <td><?= $media['type_payement']?></td>
-                                    <td><?= $media['montant']?></td>
-                                    <td><?= $media['matin']?></td>
-                                    <td><?= $media['midi']?></td>
-                                    <td><?= $media['soir']?></td>
-                                    <td><?= $media['nbr_diffusion']?></td>
-                                    <td class="audio-col" style="width: 200px; height: 40px;">
-                                        <?php
-                                        if (!empty($media['audio'])) {
-                                            echo '<audio controls style="width: 100%; height: 100%;">';
-                                            echo '<source src="uploads/' . $media['audio'] . '" type="audio/mpeg">';
-                                            echo 'Votre navigateur ne prend pas en charge l\'élément audio.';
-                                            echo '</audio>';
-                                        }
-                                        ?>
-                                    </td>
-
-                                    <td>
-                                        <div style="display: flex; align-items: center;">
-                                            <a href="read.php?nom=<?= $media['nom']?>"><i class='bx bx-show-alt' style='color: blue;'></i></a>
-                                            <a href="modifier.php?nom=<?= $media['nom']?>"><i class='bx bx-edit-alt' style='color: blue;'></i></a>
-                                            <a href="supprimer.php?nom=<?= $media['nom']?>"><i class='bx bx-trash' style='color: blue;'></i></a>
-                                        </div>
-                                    </td>
-                                </tr> 
-                            <?php          
-                            }
-                            ?>
-                        </tbody>
-                    </table>
-
-                    <div style='margin-left: 635px;'>
-                                    <!-- Formulaire de recherche par DatePaye -->
-                <form method="get" class="search-form">
-                    <div class="form-group d-flex" style="margin-left: 400px;">
-                        <input type="date" name="search_date" class="form-control short-search-input" id="search_date">
-                        <button type="submit" class="btn btn-primary search-btn" style="margin-left: 10px;">Calculer Montant Total</button>
-                    </div>
-                </form>
-                        <input type="submit" name="moveToArchives" class="btn btn-primary" value="Archivés">
-                    </div>
-                </form>
-            </section>
+    <h1>Ajouter un audio manquant</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="text" name="nom" placeholder="Entrez le nom de l'enregistrement">
+        <div>
+            <label for="audio">Sélectionnez un fichier audio :</label>
+            <input type="file" name="audio" accept=".3pg, .mp3, .m4a, .wav, .m3u, .ogg">
         </div>
-    </div>
+        <div>
+            <button type="submit">Ajouter l'audio</button>
+        </div>
+    </form>
 </body>
+
 </html>

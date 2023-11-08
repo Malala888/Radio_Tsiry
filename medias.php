@@ -512,6 +512,7 @@ include('header.php');
                                             <a href="#" class="view_data"><i class='bx bx-show-alt icon-blue'></i></a>
                                             <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
                                             <a href="#" class="delete_data"><i class='bx bx-trash icon-red'></i></a>
+                                            <a href="ajout_audio.php"><i class='bx bx-headphone' style='color:#008000'  ></i></a>
                                         </div>
 
                                     </td>

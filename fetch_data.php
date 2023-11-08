@@ -62,6 +62,7 @@ if (isset($_GET['periode'])) {
         $output .= "<a href='#' class='view_data'><i class='bx bx-show-alt' style='color: blue;'></i></a>";
         $output .= "<a href='#' class='edit_data'><i class='bx bx-edit-alt' style='color: yellow;'></i></a>";
         $output .= "<a href='supprimer.php?nom={$media['nom']}'><i class='bx bx-trash' style='color: red;'></i></a>";
+        $output .= "<a href='ajout_audio.php'><i class='bx bx-headphone' style='color:#008000'></i></a>";
         $output .= "</div>";
         $output .= "</td>";
         $output .= "</tr>";
