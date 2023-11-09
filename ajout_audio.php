@@ -52,6 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Fermer la connexion à la base de données
 require_once('close.php');
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -66,10 +69,12 @@ require_once('close.php');
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             text-align: center;
-            padding-top: 40px;
+            margin: 0; /* Ajout de la règle pour supprimer la marge par défaut */
+            padding-top: 0; /* Ajout de la règle pour supprimer le remplissage par défaut */
         }
 
         h1 {
+            margin-left: 90px;
             color: #333;
         }
 
@@ -108,6 +113,13 @@ require_once('close.php');
 </head>
 
 <body>
+    <div id="header">
+        <?php
+        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Ajouter l'audio manquant";
+        include('header.php');
+        ?>
+    </div>
+
     <h1>Ajouter un audio manquant</h1>
     <form method="post" enctype="multipart/form-data">
         <input type="text" name="nom" placeholder="Entrez le nom de l'enregistrement">
