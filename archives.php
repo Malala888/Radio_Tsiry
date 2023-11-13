@@ -97,11 +97,6 @@ $archivesResult = $queryArchives->fetchAll();
 ?>
 
 
-<?php
-$pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des archives";
-include('header.php');
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -161,7 +156,12 @@ include('header.php');
 </head>
 
 <body>
-
+    <div id="header">
+        <?php
+        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des archives";
+        include('header.php');
+        ?>
+    </div>
     <!--essaie-->
     <script>
         $(document).ready(function() {
@@ -360,6 +360,9 @@ include('header.php');
                             ?>
                         </tbody>
                     </table>
+                    <div style="display: flex; margin-left: 700px;">
+                    <a href="pdf.php" class="btn btn-primary">PDF</a>
+                    </div>
                 </form>
             </section>
         </div>

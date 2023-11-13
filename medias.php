@@ -83,10 +83,6 @@ $query->execute();
 $result = $query->fetchAll();
 ?>
 
-<?php
-$pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des médias";
-include('header.php');
-?>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -165,6 +161,13 @@ include('header.php');
 </head>
 
 <body>
+    <div id="header">
+        <?php
+        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des médias";
+        include('header.php');
+        ?>
+
+    </div>
 
     <!--essaie-->
     <script>
@@ -369,8 +372,8 @@ include('header.php');
                                             <option value="En espèce">En espèce</option>
                                             <option value="Mobile money">Mobile money</option>
                                             <option value="Chèque">Chèque</option>
-                                            <option value="Virement">Chèque</option>
-                                            <option value="A payer">Chèque</option>
+                                            <option value="Virement">Virement</option>
+                                            <option value="A payer">A payer</option>
                                         </select>
                                     </div>
                                     <div class="form-group mb-3">
@@ -512,7 +515,7 @@ include('header.php');
                                             <a href="#" class="view_data"><i class='bx bx-show-alt icon-blue'></i></a>
                                             <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
                                             <a href="#" class="delete_data"><i class='bx bx-trash icon-red'></i></a>
-                                            <a href="ajout_audio.php"><i class='bx bx-headphone' style='color:#008000'  ></i></a>
+                                            <a href="ajout_audio.php"><i class='bx bx-headphone' style='color:#008000'></i></a>
                                         </div>
 
                                     </td>
@@ -522,12 +525,15 @@ include('header.php');
                             ?>
                         </tbody>
                     </table>
-                    <div style="display: flex; margin-left: 845px;">
+                    <div style="display: flex; margin-left: 760px;">
                         <div style="margin-right: 10px;">
                             <input type="submit" name="moveToArchives" class="btn btn-primary" value="Archivés">
                         </div>
-                        <div>
+                        <div style="margin-right: 10px;">
                             <input type="button" name="historique" class="btn btn-primary" value="Historique" onclick="window.location.href='historique.php'">
+                        </div>
+                        <div>
+                            <a href="pdf.php" class="btn btn-primary">PDF</a>
                         </div>
                     </div>
                 </form>

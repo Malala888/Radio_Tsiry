@@ -194,8 +194,8 @@ require_once('close.php');
                             <option value="En espèce">En espèce</option>
                             <option value="Mobile money">Mobile money</option>
                             <option value="Chèque">Chèque</option>
-                            <option value="Virement">Chèque</option>
-                            <option value="A payer">Chèque</option>
+                            <option value="Virement">Virement</option>
+                            <option value="A payer">A payer</option>
                         </select><br>
                         <!-- Afficher un message d'erreur sous le champ -->
                         <?php if (isset($erreurs['type_payement'])) { ?>
@@ -262,7 +262,7 @@ require_once('close.php');
 
                     <div>
                         <button class="btn btn-primary" type="submit">Ajouter</button>
-                        <a href="achat.php" class="btn btn-primary ml-3">Retour</a>
+                        <a href="medias.php" class="btn btn-primary ml-3">Retour</a>
                     </div>
                 </form>
             </section>

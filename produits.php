@@ -39,11 +39,6 @@ $result = $query->fetchAll();
 require_once('close.php');
 ?>
 
-<?php
-$pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des produits</span>";
-include('header.php');
-?>
-
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -56,10 +51,6 @@ include('header.php');
     <style>
         .table {
             margin-top: 20px;
-        }
-
-        .btn {
-            margin-left: 350px;
         }
 
         .search-form {
@@ -79,14 +70,14 @@ include('header.php');
             /* Ajout de coins arrondis */
         }
 
-        .idk_btn {
-            margin-left: 920px;
+        /* Ajouter ce style CSS à votre balise style dans l'en-tête */
+
+
+
+        .action-button {
+            margin-right: 10px;
         }
 
-        .ml-3 {
-            margin-left: 10px;
-            /* Espacement horizontal entre les boutons */
-        }
         .modal-footer {
             display: flex;
             justify-content: space-between;
@@ -101,14 +92,21 @@ include('header.php');
 
         .btn-secondary,
         .btn-primary {
-           display: inline-block;
-            margin: 0 10px !important; 
+            display: inline-block;
+            margin: 0 10px !important;
         }
     </style>
 </head>
 
 <body>
 
+    <div id="header">
+        <?php
+        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Liste des produits</span>";
+        include('header.php');
+        ?>
+    </div>
+    
     <!--Modifier-->
     <script>
         $(document).ready(function() {
@@ -393,9 +391,10 @@ include('header.php');
                         ?>
                     </tbody>
                 </table>
-                <div style="margin-left: 900px;">
-                    <a href="entrer.php" class="btn btn-primary idk_btn"> Entrer</a>
-                    <a href="achat.php" class="btn btn-primary ml-3">Achat</a>
+                <div class="button-container" style="margin-left: 855px;">
+                    <a href="entrer.php" class="btn btn-primary" style="margin-right: 10px;">Entrer</a>
+                    <a href="achat.php" class="btn btn-primary" style="margin-right: 10px;">Achat</a>
+                    <a href="pdf.php" class="btn btn-primary">PDF</a>
                 </div>
             </section>
         </div>

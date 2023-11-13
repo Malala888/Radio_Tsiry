@@ -1,0 +1,10 @@
+
+        <h2 class="my-4">Générer en PDF</h2>
+        
+        Date de début: 2023-11-01<br>Date de fin: 2023-11-30<br><div class="entre-produits-table"><h2 class="my-4">Entrée de produits</h2><div class="table-responsive"><table class="table table-bordered" style="width:700px;"><thead><tr><th>Nom</th><th>Date d'entrée</th><th>Stock d'entrée</th></tr></thead><tbody><tr div="" align="center"><td>Spiriline</td><td>2023-11-06</td><td>2</td></tr></tbody></table></div></div><h2 class="my-4">Achat de produits</h2><div class="table-responsive"><table class="table table-bordered" style="width:700px;"><thead><tr><th>Nom</th><th>Date d'achat</th><th>Quantité</th></tr></thead><tbody><tr div="" align="center"><td>Spiriline</td><td>2023-11-06</td><td>2</td></tr></tbody></table></div><h3 class="my-4" style="text-align: right;">Total : <input type="text" value="3000" style="font-weight: bold;" disabled=""></h3><h3 class="my-4">Aucun résultat trouvé pour cette période à propos des médias</h3><h2 class="my-4">Archives</h2><div class="table-responsive"><table class="table table-bordered" style="width:700px;"><thead><tr><th>Nom</th><th>Type</th><th>Date de Paiement</th><th>Type de Paiement</th><th>Montant</th></tr></thead><tbody><tr div="" align="center"><td>Cours Manambina BACC 2023</td><td>Annonce</td><td>2023-11-04</td><td>En espèce</td><td>120000</td></tr></tbody></table></div><h3 class="my-4" style="text-align: right;">Total : <input type="text" value="120000" style="font-weight: bold;" disabled=""></h3>        <br><br>
+        <div class="my-4 d-flex justify-content-center" style="margin-top: 3em;"><h3 class="text-center" div="" align="center">Montant total: <input type="text" id="total_amount" value="123000" style="font-weight: bold;" disabled=""></h3></div>
+        <br><br>
+
+       <!-- Add onclick event for the "Générer en PDF" button -->
+       <button class="btn btn-primary" style="margin-left:980px;" onclick="generatePDF()">Générer en PDF</button>
+    

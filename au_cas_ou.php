@@ -1,78 +1,33 @@
 <?php
-// Inclure la connexion à la base de données
-require_once('db_connect.php');
+require_once 'dompdf/autoload.inc.php';
 
-// Initialiser la variable $error
-$error = null;
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['htmlContent'])) {
+    $htmlContent = $_POST['htmlContent'];
 
-// Vérifier si un formulaire pour l'ajout d'audio a été soumis
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Vérifier les données soumises et traiter le téléchargement de l'audio pour l'enregistrement spécifié
-    $nom = filter_input(INPUT_POST, 'nom', FILTER_SANITIZE_STRING);
-    if ($nom) {
-        // Traitement du téléchargement de l'audio pour cet enregistrement spécifique
+    // Initialize dompdf
+    $dompdf = new Dompdf\Dompdf();
+    $dompdf->loadHtml($htmlContent);
 
-        // Vérifier s'il y a un fichier audio téléchargé
-        if (isset($_FILES['audio'])) {
-            $audio_name = $_FILES['audio']['name'];
-            $tmp_name = $_FILES['audio']['tmp_name'];
-            $error = $_FILES['audio']['error'] ?? 0; // Utilisation de la syntaxe ?? pour éviter les valeurs null
+    // Set paper size
+    $dompdf->setPaper('A4', 'portrait');
 
-            if ($error === 0) {
-                // Ajoutez ici votre logique de traitement de fichier audio
-                $target_dir = "uploads/"; // Dossier de destination pour les fichiers téléchargés
-                $new_audio_name = uniqid("audio-", true) . '_' . $audio_name; // Génère un nouveau nom de fichier unique
-                $target_file = $target_dir . $new_audio_name; // Chemin complet du fichier de destination
+    // Render PDF (first pass to get total pages)
+    $dompdf->render();
 
-                if (move_uploaded_file($tmp_name, $target_file)) {
-                    // Mettez à jour la base de données avec le nom du fichier audio ajouté
-                    $sql = "UPDATE medias SET audio = :audio WHERE nom = :nom";
-                    $stmt = $db->prepare($sql);
-                    $stmt->bindParam(':audio', $new_audio_name, PDO::PARAM_STR);
-                    $stmt->bindParam(':nom', $nom, PDO::PARAM_STR);
-                    if ($stmt->execute()) {
-                        echo "Le fichier audio a été ajouté avec succès.";
-                    } else {
-                        echo "Une erreur est survenue lors de la mise à jour de la base de données.";
-                    }
-                } else {
-                    echo "Une erreur est survenue lors du téléchargement du fichier audio.";
-                }
-            } else {
-                echo "Une erreur est survenue lors de l'envoi du fichier audio : " . $error;
-            }
-        } else {
-            echo "Aucun fichier audio n'a été téléchargé.";
-        }
-    } else {
-        echo "Le nom de l'enregistrement est invalide.";
-    }
+    // Output PDF as a string
+    $output = $dompdf->output();
+
+    // Save the PDF on the server
+    $pdfFilePath = 'C:\Users\Malala\Desktop\Test\generated_pdf.pdf';
+    file_put_contents($pdfFilePath, $output);
+
+    // Return the file path to the client
+    echo $pdfFilePath;
+    exit;
 }
-
-// Fermer la connexion à la base de données
-require_once('close.php');
 ?>
-<!DOCTYPE html>
-<html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ajouter un audio manquant</title>
-</head>
 
-<body>
-    <h1>Ajouter un audio manquant</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="text" name="nom" placeholder="Entrez le nom de l'enregistrement">
-        <div>
-            <label for="audio">Sélectionnez un fichier audio :</label>
-            <input type="file" name="audio" accept=".3pg, .mp3, .m4a, .wav, .m3u, .ogg">
-        </div>
-        <div>
-            <button type="submit">Ajouter l'audio</button>
-        </div>
-    </form>
-</body>
 
-</html>
+
+
