@@ -191,16 +191,14 @@
                                 <label for="pdfFileName" class="form-label">Nom du fichier PDF:</label>
                                 <input type="text" id="pdfFileName" name="pdfFileName" class="form-control" required>
                             </div>
-                            <div class="mb-3">
-                                <label for="pdfFileLocation" class="form-label">Emplacement du fichier PDF:</label>
-                                <input type="text" id="pdfFileLocation" name="pdfFileLocation" class="form-control" required>
-                            </div>
+                            <!-- No need for the file location input -->
                             <button type="button" class="btn btn-primary" onclick="generatePDF()">PDF</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
 
 
         <!-- Add onclick event for the "Générer en PDF" button -->
@@ -210,30 +208,44 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-
     <script>
-        function generatePDF() {
-            // Récupérer les valeurs saisies par l'utilisateur
-            var fileName = $("#pdfFileName").val();
-            var fileLocation = $("#pdfFileLocation").val();
+        function base64ToArrayBuffer(base64) {
+            var binaryString = window.atob(base64);
+            var binaryLen = binaryString.length;
+            var bytes = new Uint8Array(binaryLen);
+            for (var i = 0; i < binaryLen; i++) {
+                var ascii = binaryString.charCodeAt(i);
+                bytes[i] = ascii;
+            }
+            return bytes.buffer;
+        }
 
-            // Vérifier si les valeurs sont renseignées
-            if (!fileName || !fileLocation) {
-                alert("Veuillez saisir un nom de fichier et un emplacement.");
+        function generatePDF() {
+            // Récupérer le nom du fichier saisi par l'utilisateur
+            var fileName = $("#pdfFileName").val();
+
+            // Utiliser directement le chemin spécifié
+            var fileLocation = "C:\\Users\\Malala\\Desktop\\PDF"; // Remplacez ceci par votre chemin spécifique
+
+            // Vérifier si le nom du fichier est renseigné
+            if (!fileName) {
+                alert("Veuillez saisir un nom de fichier.");
                 return;
             }
 
-            // Récupérer le contenu HTML
-            var htmlContent = $(".pdf-content").html();
+            // Exclure les éléments indésirables du contenu HTML
+            var htmlContent = $(".pdf-content").clone(); // Clonez le contenu pour éviter de modifier la page actuelle
+            htmlContent.find("#pdfModal, .modal-backdrop").remove(); // Supprimez le modal et son fond
+            htmlContent.find("button").remove(); // Supprimez tous les boutons
 
             // Envoyer le contenu HTML au script PHP pour la génération PDF
             $.ajax({
                 type: "POST",
                 url: "generate_pdf.php",
                 data: {
-                    htmlContent: htmlContent,
+                    htmlContent: htmlContent.html(), // Utilisez le HTML du contenu modifié
                     fileLocation: fileLocation,
-                    fileName: fileName // Ajoutez cette ligne pour transmettre le nom du fichier
+                    fileName: fileName
                 },
                 success: function(response) {
                     // Ajoutez des informations de débogage
@@ -258,6 +270,9 @@
                         // Nettoyer et révoquer l'URL de l'objet Blob
                         window.URL.revokeObjectURL(blobUrl);
                         document.body.removeChild(link);
+
+                        // Rediriger l'utilisateur vers une autre page après la génération du PDF
+                        window.location.href = "pdf.php";
                     } else {
                         // Afficher une alerte en cas d'erreur côté serveur
                         alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
@@ -267,24 +282,8 @@
                     console.error("Erreur lors de la génération du PDF: ", textStatus, errorThrown);
                 }
             });
-
-            // Fermer la fenêtre modale
-            $("#pdfModal").modal("hide");
-        }
-
-        // Convertir la chaîne base64 en ArrayBuffer
-        function base64ToArrayBuffer(base64) {
-            var binaryString = window.atob(base64);
-            var binaryLen = binaryString.length;
-            var bytes = new Uint8Array(binaryLen);
-            for (var i = 0; i < binaryLen; i++) {
-                var ascii = binaryString.charCodeAt(i);
-                bytes[i] = ascii;
-            }
-            return bytes.buffer;
         }
     </script>
-
 </body>
 
 </html>

@@ -42,7 +42,7 @@
 <body>
     <div id="header">
         <?php
-        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Histogramme des médias";
+        $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Histogramme Médias";
         include('header.php');
         ?>
 

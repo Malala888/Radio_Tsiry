@@ -22,7 +22,7 @@ if (isset($_GET['periode'])) {
         // Gérer le cas où la période n'est pas valide
         // Par exemple, vous pouvez renvoyer une erreur ou une réponse vide
         // en cas de période non valide
-        // echo "Période non valide";
+        echo "Période non valide";
          //exit;
     }
 
@@ -61,7 +61,7 @@ if (isset($_GET['periode'])) {
         $output .= "<div style='display: flex; align-items: center;'>";
         $output .= "<a href='#' class='view_data'><i class='bx bx-show-alt' style='color: blue;'></i></a>";
         $output .= "<a href='#' class='edit_data'><i class='bx bx-edit-alt' style='color: yellow;'></i></a>";
-        $output .= "<a href='supprimer.php?nom={$media['nom']}'><i class='bx bx-trash' style='color: red;'></i></a>";
+        $output .= "<a href='#' class='delete_data'><i class='bx bx-trash' style='color: red;'></i></a>";
         $output .= "<a href='ajout_audio.php'><i class='bx bx-headphone' style='color:#008000'></i></a>";
         $output .= "</div>";
         $output .= "</td>";

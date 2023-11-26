@@ -13,7 +13,7 @@ if (isset($_GET['search'])) {
     $searchTerm = '%' . strip_tags($_GET['search']) . '%';
 
     // Requête SQL pour rechercher des archives par nom
-    $sql = 'SELECT * FROM `archives` WHERE `nom` LIKE :searchTerm';
+    $sql = 'SELECT * FROM `archives` WHERE `nom` LIKE :searchTerm OR `DatePaye` LIKE :searchTerm';
 
     // Préparation de la requête
     $query = $db->prepare($sql);
@@ -184,7 +184,7 @@ $archivesResult = $queryArchives->fetchAll();
     <!--Efface-->
     <script>
         $(document).ready(function() {
-            $('.delete_data').click(function(e) {
+            $(document).on('click', '.delete_data', function(e) {
                 e.preventDefault();
 
                 var nom1 = $(this).closest('tr').find('.nom1').text();

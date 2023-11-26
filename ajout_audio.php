@@ -117,12 +117,13 @@ require_once('close.php');
         <?php
         $pageTitle = "<span style='font-weight:bold; font-size:24px; margin-right:10px;'>Ajouter l'audio manquant";
         include('header.php');
+        $nomAudio = $_GET['nom'];
         ?>
     </div>
 
     <h1>Ajouter un audio manquant</h1>
     <form method="post" enctype="multipart/form-data">
-        <input type="text" name="nom" placeholder="Entrez le nom de l'enregistrement">
+        <input type="text" name="nom" placeholder="Entrez le nom de l'enregistrement" value="<?php echo $nomAudio; ?>">
         <div>
             <label for="audio">Sélectionnez un fichier audio :</label>
             <input type="file" name="audio" accept=".3pg, .mp3, .m4a, .wav, .m3u, .ogg">

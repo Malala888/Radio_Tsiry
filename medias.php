@@ -16,7 +16,7 @@ if (isset($_GET['search'])) {
     $searchTerm = '%' . strip_tags($_GET['search']) . '%';
 
     // Requête SQL pour rechercher des médias par nom
-    $sql = 'SELECT * FROM `medias` WHERE `nom` LIKE :searchTerm';
+    $sql = 'SELECT * FROM `medias` WHERE `nom` LIKE :searchTerm OR `DatePaye` LIKE :searchTerm';
 
     // Préparation de la requête
     $query = $db->prepare($sql);
@@ -193,7 +193,7 @@ $result = $query->fetchAll();
     <!--Efface-->
     <script>
         $(document).ready(function() {
-            $('.delete_data').click(function(e) {
+            $(document).on('click', '.delete_data', function(e) {
                 e.preventDefault();
 
                 var nom1 = $(this).closest('tr').find('.nom1').text();
@@ -515,7 +515,7 @@ $result = $query->fetchAll();
                                             <a href="#" class="view_data"><i class='bx bx-show-alt icon-blue'></i></a>
                                             <a href="#" class="edit_data"><i class='bx bx-edit-alt' style='color: yellow;'></i></a>
                                             <a href="#" class="delete_data"><i class='bx bx-trash icon-red'></i></a>
-                                            <a href="ajout_audio.php"><i class='bx bx-headphone' style='color:#008000'></i></a>
+                                            <a href="ajout_audio.php?nom=<?= $media['nom'] ?>"><i class='bx bx-headphone' style='color:#008000'></i></a>
                                         </div>
 
                                     </td>
